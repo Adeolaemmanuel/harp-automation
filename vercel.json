@@ -1,7 +1,13 @@
 {
-    "build": {
-      "env": {
-        "GO_BUILD_FLAGS": "-ldflags '-s -w'"
-      }
+  "build": {
+    "env": {
+      "GO_BUILD_FLAGS": "-ldflags '-s -w'"
     }
-  }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.go"
+    }
+  ]
+}
