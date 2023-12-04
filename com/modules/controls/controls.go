@@ -14,7 +14,7 @@ func (con Controls) Control(payload Controls) (bool, error) {
 	case OR:
 		return con.OrCombinator(payload)
 	default:
-		return false, errors.New("invalid combinator")
+		return false, errors.New("invalid combinator added")
 	}
 }
 
@@ -93,19 +93,20 @@ func mapName() map[string] string {
 	data[IsStringEndWith] = IsStringEndWith
 	data[IsStringNotContain] = IsStringNotContain
 	data[IsStringStartWith] = IsStringStartWith
+	data[IsBetween] = IsBetween
 
 	return data
 }
 
 //Check if value true can be found in the array
 func isContainsTrue(b []bool) bool {
-	var bo bool
+	var _b bool
 
 	for _, v := range b {
 		if v  {
-			bo = v
+			_b = v
 		}
 	}
 
-	return bo
+	return _b
 }

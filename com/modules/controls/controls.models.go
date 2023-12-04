@@ -21,6 +21,7 @@ const (
 	IsLesserNumber string = "<"
 	IsLesserEqualNumber string = "<="
 	IsLargerEqualNumber string = ">="
+	IsBetween string = "between"
 )
 
 type If struct {}

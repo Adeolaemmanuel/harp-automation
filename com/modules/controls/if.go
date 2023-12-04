@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-//Controll
+//Control
 func (I If) IfControl(operator string, value1, value2 any) (bool, error) {
 	switch operator {
 	case IsEquals:
@@ -30,8 +30,10 @@ func (I If) IfControl(operator string, value1, value2 any) (bool, error) {
 		return I.IsLargerNumber(value1.(int), value2.(int))
 	case IsStringEmpty:
 		return I.isStringEmpty(value1.(string))
+	case IsBetween:
+		return I.IsBetweenValue(value1, value2)
 	default:
-		return false, errors.New("invalid operator selected")
+		return false, errors.New("invalid operator found")
 	}
 }
 
@@ -271,4 +273,43 @@ func (I If) IsTimeEqual(value1, value2 any) (bool, error) {
 	}
 
 	return time1.Year() == time2.Year() && time1.YearDay() == time2.YearDay(),  nil
+}
+
+func (I If) IsBetweenValue(value1, value2 any) (bool, error) {
+
+	value := strings.Split(value1.(string), ",")
+
+	if I.checkIfDateTime(value1) && I.checkIfDateTime(value2) {
+		time1, err1 := time.Parse(time.RFC3339, value[0])
+		time2, err2 := time.Parse(time.RFC3339, value[1])
+		time3, err3 := time.Parse(time.RFC3339, value2.(string))
+
+		if err1 != nil {
+			return false, err1
+		}
+	
+		if err2 != nil {
+			return false, err2
+		}
+
+		if err3 != nil {
+			return false, err3
+		}
+		
+		return I.TimeIsBetween(time3, time1, time2), nil
+	}
+
+	if I.checkIfInt(value1) && I.checkIfInt(value2) {
+		return value1.(int) >= value2.(int) && value1.(int) <= value2.(int), nil
+	}
+
+	return false, errors.New("invalid values for between, supports only int and date")
+
+}
+
+func (I If) TimeIsBetween(t, min, max time.Time) bool {
+	if min.After(max) {
+		min, max = max, min
+	}
+	return (t.Equal(min) || t.After(min)) && (t.Equal(max) || t.Before(max))
 }
