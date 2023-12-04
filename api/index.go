@@ -7,7 +7,7 @@ import (
 
 var autoRouter = automation.Automation{}
 
-func Main () {
+func Handler () {
 	server := gin.Default()
 
 	autoRouter.AutomationRouter(server.Group("/api/v1/automation"))
