@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -64,6 +65,11 @@ func (I If) checkIfInt(value any) bool {
 	return reflect.TypeOf(value).Kind() == reflect.Int
 }
 
+// Check if value is bool
+func (I If) checkIfBool(value any) bool {
+	return reflect.TypeOf(value).Kind() == reflect.Bool
+}
+
 // Check if value is date/time
 func (I If) checkIfDateTime(value any) bool {
 
@@ -102,6 +108,13 @@ func (I If) IsEquals(value1 any, value2 any) (bool, error) {
 	} else if I.checkIfDateTime(value1) && I.checkIfDateTime(value2) {
 
 		return I.IsTimeEqual(value1, value2)
+
+	} else if I.checkIfBool(value1) && I.checkIfBool(value2) {
+
+		ok1, _ := strconv.ParseBool(value1.(string)) 
+		ok2, _ := strconv.ParseBool(value2.(string)) 
+
+		return ok1 == ok2, nil
 
 	}  else {
 
