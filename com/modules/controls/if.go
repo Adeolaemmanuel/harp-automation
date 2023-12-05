@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -97,9 +96,15 @@ func (I If) checkIfDate(value any) bool {
 // Check if the value1 is equal value2
 func (I If) IsEquals(value1 any, value2 any) (bool, error) {
 
+	fmt.Println(I.checkIfBool(value1))
+
 	if I.checkIfInt(value1) && I.checkIfInt(value2) {
 
 		return I.IsEqualsToNumber(value1.(int), value2.(int))
+
+	} else if I.checkIfBool(value1) && I.checkIfBool(value2) {
+
+		return value1 == value2, nil
 
 	} else if I.checkIfString(value1) && I.checkIfString(value2) {
 
@@ -109,14 +114,7 @@ func (I If) IsEquals(value1 any, value2 any) (bool, error) {
 
 		return I.IsTimeEqual(value1, value2)
 
-	} else if I.checkIfBool(value1) && I.checkIfBool(value2) {
-
-		ok1, _ := strconv.ParseBool(value1.(string)) 
-		ok2, _ := strconv.ParseBool(value2.(string)) 
-
-		return ok1 == ok2, nil
-
-	}  else {
+	} else {
 
 		return false, errors.New("invalid Equality comparison")
 
