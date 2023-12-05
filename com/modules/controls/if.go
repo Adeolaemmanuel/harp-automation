@@ -2,6 +2,7 @@ package controls
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
@@ -21,13 +22,13 @@ func (I If) IfControl(operator string, value1, value2 any) (bool, error) {
 	case IsStringStartWith:
 		return I.IsStringStartWith(value1.(string), value2.(string))
 	case IsLargerEqualNumber:
-		return I.IsLargerEqualNumber(value1.(int), value2.(int))
+		return I.IsLargerEqualNumber(int(value1.(float64)), int(value2.(float64)))
 	case IsLesserEqualNumber:
-		return I.IsLesserEqualNumber(value1.(int), value2.(int))
+		return I.IsLesserEqualNumber(int(value1.(float64)), int(value2.(float64)))
 	case IsLesserNumber:
 		return I.IsLesserNumber(value1.(int), value2.(int))
 	case IsLargerNumber:
-		return I.IsLargerNumber(value1.(int), value2.(int))
+		return I.IsLargerNumber(int(value1.(float64)), int(value2.(float64)))
 	case IsStringEmpty:
 		return I.isStringEmpty(value1.(string))
 	case IsBetween:
@@ -71,6 +72,18 @@ func (I If) checkIfDateTime(value any) bool {
 	}
 
 	_, err := time.Parse(time.RFC3339, value.(string))
+
+	return err == nil
+}
+
+// Check if value is date
+func (I If) checkIfDate(value any) bool {
+
+	if I.checkIfInt(value) {
+		return I.checkIfInt(value)
+	}
+
+	_, err := time.Parse(time.DateOnly, value.(string))
 
 	return err == nil
 }
@@ -279,10 +292,10 @@ func (I If) IsBetweenValue(value1, value2 any) (bool, error) {
 
 	value := strings.Split(value1.(string), ",")
 
-	if I.checkIfDateTime(value1) && I.checkIfDateTime(value2) {
-		time1, err1 := time.Parse(time.RFC3339, value[0])
-		time2, err2 := time.Parse(time.RFC3339, value[1])
-		time3, err3 := time.Parse(time.RFC3339, value2.(string))
+	if I.checkIfDate(value[0]) && I.checkIfDate(value[1]) && I.checkIfDate(value2) {
+		time1, err1 := time.Parse(time.DateOnly, value[0])
+		time2, err2 := time.Parse(time.DateOnly, value[1])
+		time3, err3 := time.Parse(time.DateOnly, value2.(string))
 
 		if err1 != nil {
 			return false, err1
@@ -295,7 +308,7 @@ func (I If) IsBetweenValue(value1, value2 any) (bool, error) {
 		if err3 != nil {
 			return false, err3
 		}
-		
+		fmt.Println(I.TimeIsBetween(time3, time1, time2))
 		return I.TimeIsBetween(time3, time1, time2), nil
 	}
 

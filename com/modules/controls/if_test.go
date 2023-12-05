@@ -179,3 +179,15 @@ func TestIsLargerEqualNumber(t *testing.T) {
 		t.Log("value1 is lesser/equal value2")
 	}
 }
+
+func TestIsBetweenValue(t *testing.T) {
+	ok, err := ifControl.IfControl(IsBetween, "1954-10-03,1960-06-06", "1924-10-03")
+
+	if err != nil {
+		t.Error(err)
+	} else if !ok {
+		t.Error("value2 is not in between value1")
+	} else {
+		t.Log("value2 is between value2")
+	}
+}

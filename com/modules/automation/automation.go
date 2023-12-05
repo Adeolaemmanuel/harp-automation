@@ -1,6 +1,8 @@
 package automation
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"harp-automation.com/com/modules/controls"
 )
@@ -13,8 +15,8 @@ func (a Automation) AutomationRouter(r *gin.RouterGroup) {
 
 func combinatorHandler(c *gin.Context) {
 	payload := controls.Controls{}
-
 	if err := c.ShouldBind(&payload); err == nil {
+		fmt.Println(payload)
 		ok, controlErr := con.Control(payload)
 
 		if controlErr != nil {

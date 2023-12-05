@@ -1,4 +1,4 @@
-package handler
+package main
 
 import (
 	"net/http"
@@ -17,4 +17,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	autoRouter.AutomationRouter(server.Group("/api/v1/automation"))
 
 	server.ServeHTTP(w, r)
+}
+
+func main() {
+	server := gin.Default()
+
+	autoRouter.AutomationRouter(server.Group("/api/v1/automation"))
+	server.Run(":3000")
 }
