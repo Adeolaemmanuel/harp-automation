@@ -17,9 +17,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	server.ServeHTTP(w, r)
 }
 
-// func main() {
-// 	server := gin.Default()
+func main() {
+	server := gin.Default()
 
-// 	autoRouter.AutomationRouter(server.Group("/api/v1/automation"))
-// 	server.Run(":3000")
-// }
+	autoRouter.AutomationRouter(server.Group("/api/v1/automation"))
+	server.Run(":3000")
+}
