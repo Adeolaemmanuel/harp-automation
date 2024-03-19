@@ -9,8 +9,6 @@ import (
 
 var autoRouter = automation.Automation{}
 
-
-
 func Handler(w http.ResponseWriter, r *http.Request) {
 	server := gin.Default()
 

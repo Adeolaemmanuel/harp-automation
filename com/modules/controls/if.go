@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-//Control
+// Control
 func (I If) IfControl(operator string, value1, value2 any) (bool, error) {
 	switch operator {
 	case IsEquals:
@@ -26,7 +26,7 @@ func (I If) IfControl(operator string, value1, value2 any) (bool, error) {
 	case IsLesserEqualNumber:
 		return I.IsLesserEqualNumber(int(value1.(float64)), int(value2.(float64)))
 	case IsLesserNumber:
-		return I.IsLesserNumber(value1.(int), value2.(int))
+		return I.IsLesserNumber(int(value1.(float64)), int(value2.(float64)))
 	case IsLargerNumber:
 		return I.IsLargerNumber(int(value1.(float64)), int(value2.(float64)))
 	case IsStringEmpty:
@@ -51,7 +51,7 @@ func (I If) isStringEmpty(value string) (bool, error) {
 
 // Check if value is string
 func (I If) checkIfString(value any) bool {
-	
+
 	if I.checkIfDateTime(value) {
 		return false
 	}
@@ -126,23 +126,23 @@ func (I If) IsNotEquals(value1 any, value2 any) (bool, error) {
 
 	if I.checkIfInt(value1) && I.checkIfInt(value2) {
 
-		ok, err:= I.IsEqualsToNumber(value1.(int), value2.(int))
+		ok, err := I.IsEqualsToNumber(value1.(int), value2.(int))
 
 		return !ok, err
 
 	} else if I.checkIfString(value1) && I.checkIfString(value2) {
 
-		ok, err:=  I.IsEqualsToString(value1, value2)
-		
+		ok, err := I.IsEqualsToString(value1, value2)
+
 		return !ok, err
 
 	} else if I.checkIfDateTime(value1) && I.checkIfDateTime(value2) {
 
-		ok, err:=  I.IsTimeEqual(value1, value2)
-		
+		ok, err := I.IsTimeEqual(value1, value2)
+
 		return !ok, err
 
-	}  else {
+	} else {
 
 		return false, errors.New("invalid Equality comparison")
 
@@ -156,7 +156,7 @@ func (I If) IsEqualsToString(value1, value2 any) (bool, error) {
 		return false, errors.New("data type mut be a string")
 	}
 
-	isEmpty, err:= I.isStringEmpty(value2.(string))
+	isEmpty, err := I.isStringEmpty(value2.(string))
 
 	if isEmpty {
 		return false, err
@@ -196,7 +196,6 @@ func (I If) IsStringContain(value1 string, value2 string) (bool, error) {
 // Check if the value2 is not contained in value1
 func (I If) IsStringNotContain(value1, value2 string) (bool, error) {
 
-
 	if !I.checkIfString(value1) && !I.checkIfString(value2) {
 		return false, errors.New("datatype mut be a string")
 	}
@@ -212,7 +211,6 @@ func (I If) IsStringNotContain(value1, value2 string) (bool, error) {
 
 // Check if the value2 ends with value1
 func (I If) IsStringEndWith(value1, value2 string) (bool, error) {
-
 
 	if !I.checkIfString(value1) && !I.checkIfString(value2) {
 		return false, errors.New("datatype mut be a string")
@@ -244,7 +242,7 @@ func (I If) IsStringStartWith(value1, value2 string) (bool, error) {
 }
 
 // Check if the value2 is lager with value1
-func (I If) IsLargerNumber(value1, value2 int)  (bool, error) {
+func (I If) IsLargerNumber(value1, value2 int) (bool, error) {
 
 	if !I.checkIfInt(value1) && !I.checkIfInt(value2) {
 		return false, errors.New("datatype must be an int")
@@ -254,7 +252,7 @@ func (I If) IsLargerNumber(value1, value2 int)  (bool, error) {
 }
 
 // Check if the value2 is lesser with value1
-func (I If) IsLesserNumber(value1, value2 int)  (bool, error) {
+func (I If) IsLesserNumber(value1, value2 int) (bool, error) {
 
 	if !I.checkIfInt(value1) && !I.checkIfInt(value2) {
 		return false, errors.New("datatype must be an int")
@@ -264,7 +262,7 @@ func (I If) IsLesserNumber(value1, value2 int)  (bool, error) {
 }
 
 // Check if the value2 is lesser/equal with value1
-func (I If) IsLesserEqualNumber(value1, value2 int)  (bool, error) {
+func (I If) IsLesserEqualNumber(value1, value2 int) (bool, error) {
 
 	if !I.checkIfInt(value1) && !I.checkIfInt(value2) {
 		return false, errors.New("datatype must be an int")
@@ -274,7 +272,7 @@ func (I If) IsLesserEqualNumber(value1, value2 int)  (bool, error) {
 }
 
 // Check if the value2 is lager/equal with value1
-func (I If) IsLargerEqualNumber(value1, value2 int)  (bool, error) {
+func (I If) IsLargerEqualNumber(value1, value2 int) (bool, error) {
 
 	if !I.checkIfInt(value1) && !I.checkIfInt(value2) {
 		return false, errors.New("datatype must be an int")
@@ -296,7 +294,7 @@ func (I If) IsTimeEqual(value1, value2 any) (bool, error) {
 		return false, err2
 	}
 
-	return time1.Year() == time2.Year() && time1.YearDay() == time2.YearDay(),  nil
+	return time1.Year() == time2.Year() && time1.YearDay() == time2.YearDay(), nil
 }
 
 func (I If) IsBetweenValue(value1, value2 any) (bool, error) {
@@ -311,7 +309,7 @@ func (I If) IsBetweenValue(value1, value2 any) (bool, error) {
 		if err1 != nil {
 			return false, err1
 		}
-	
+
 		if err2 != nil {
 			return false, err2
 		}

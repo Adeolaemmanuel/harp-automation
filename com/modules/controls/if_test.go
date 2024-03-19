@@ -133,7 +133,7 @@ func TestIsStringEmpty(t *testing.T) {
 }
 
 func TestIsLargerNumber(t *testing.T) {
-	ok, err := ifControl.IfControl(IsLargerNumber, 2, 1)
+	ok, err := ifControl.IfControl(IsLargerNumber, 2.0, 1.0)
 
 	if err != nil {
 		t.Error(err)
@@ -145,7 +145,7 @@ func TestIsLargerNumber(t *testing.T) {
 }
 
 func TestIsLesserNumber(t *testing.T) {
-	ok, err := ifControl.IfControl(IsLesserNumber, 1, 3)
+	ok, err := ifControl.IfControl(IsLesserNumber, 1.0, 3.0)
 
 	if err != nil {
 		t.Error(err)
@@ -157,7 +157,7 @@ func TestIsLesserNumber(t *testing.T) {
 }
 
 func TestIsLesserEqualNumber(t *testing.T) {
-	ok, err := ifControl.IfControl(IsLesserEqualNumber, 1, 1)
+	ok, err := ifControl.IfControl(IsLesserEqualNumber, 1.0, 1.0)
 
 	if err != nil {
 		t.Error(err)
@@ -169,7 +169,7 @@ func TestIsLesserEqualNumber(t *testing.T) {
 }
 
 func TestIsLargerEqualNumber(t *testing.T) {
-	ok, err := ifControl.IfControl(IsLargerEqualNumber, 1, 1)
+	ok, err := ifControl.IfControl(IsLargerEqualNumber, 1.0, 1.0)
 
 	if err != nil {
 		t.Error(err)
