@@ -96,8 +96,6 @@ func (I If) checkIfDate(value any) bool {
 // Check if the value1 is equal value2
 func (I If) IsEquals(value1 any, value2 any) (bool, error) {
 
-	fmt.Println(I.checkIfBool(value1))
-
 	if I.checkIfInt(value1) && I.checkIfInt(value2) {
 
 		return I.IsEqualsToNumber(value1.(int), value2.(int))

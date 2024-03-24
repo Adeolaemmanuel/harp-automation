@@ -2,11 +2,12 @@ package controls
 
 import (
 	"errors"
+	"sync"
 )
 
 var iF = If{}
 
-//Func called to control which combinator is to be called
+// Func called to control which combinator is to be called
 func (con Controls) Control(payload Controls) (bool, error) {
 	switch payload.Combinator {
 	case AND:
@@ -18,40 +19,54 @@ func (con Controls) Control(payload Controls) (bool, error) {
 	}
 }
 
-//Func called for AND combinator
+// Func called for AND combinator
 func (con Controls) AndCombinator(payload Controls) (bool, error) {
 
-	var e error
-	var b bool
+	var e = make(chan error)
+	var b = make(chan bool)
+
+	var wg sync.WaitGroup
 
 	for _, r := range payload.Rules {
 		data := mapName()
 
-		ok, err := iF.IfControl(data[r.Operator], r.Field, r.Value)
+		wg.Add(1)
+		go func(r *Rules) {
+			defer wg.Done()
 
-		if len(r.Controls.Combinator) > 0 {
-			return	con.Control(r.Controls)
-		}
+			ok, err := iF.IfControl(data[r.Operator], r.Field, r.Value)
 
-		if err != nil {
-			e = err
-			break
-		}
+			if len(r.Controls.Combinator) > 0 {
+				ok, err := con.Control(r.Controls)
+				if err != nil {
+					e <- err
+				}
 
-		if !ok {
-			b = ok
-			break
-		}
+				b <- ok
+			}
 
-		b = ok
-		
+			if err != nil {
+				e <- err
+			}
+
+			if !ok {
+				b <- ok
+			}
+
+			b <- ok
+		}(&r)
 	}
+	go func() {
+		wg.Wait()
+		close(e)
+		close(b)
+	}()
 
-	return b, e
+	return <-b, <-e
 }
 
-//Func called for OR combinator process
-func (con Controls) OrCombinator(payload Controls)  (bool, error) {
+// Func called for OR combinator process
+func (con Controls) OrCombinator(payload Controls) (bool, error) {
 	var e error
 	var b []bool
 
@@ -61,24 +76,24 @@ func (con Controls) OrCombinator(payload Controls)  (bool, error) {
 		ok, err := iF.IfControl(data[r.Operator], r.Field, r.Value)
 
 		if len(r.Controls.Combinator) > 0 {
-			return	con.Control(r.Controls)
+			return con.Control(r.Controls)
 		}
 
 		if err != nil {
 			e = err
 			break
 		}
-		
+
 		b = append(b, ok)
 	}
 
 	return isContainsTrue(b), e
 }
 
-//Maps the operators key to each other
-func mapName() map[string] string {
+// Maps the operators key to each other
+func mapName() map[string]string {
 
-	data := make(map[string] string)
+	data := make(map[string]string)
 
 	data[IsEquals] = IsEquals
 	data[IsLargerEqualNumber] = IsLargerEqualNumber
@@ -98,12 +113,12 @@ func mapName() map[string] string {
 	return data
 }
 
-//Check if value true can be found in the array
+// Check if value true can be found in the array
 func isContainsTrue(b []bool) bool {
 	var _b bool
 
 	for _, v := range b {
-		if v  {
+		if v {
 			_b = v
 		}
 	}
