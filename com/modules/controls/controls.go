@@ -2,7 +2,6 @@ package controls
 
 import (
 	"errors"
-	"sync"
 )
 
 var iF = If{}
@@ -22,47 +21,32 @@ func (con Controls) Control(payload Controls) (bool, error) {
 // Func called for AND combinator
 func (con Controls) AndCombinator(payload Controls) (bool, error) {
 
-	var e = make(chan error)
-	var b = make(chan bool)
-
-	var wg sync.WaitGroup
+	var e error
+	var b bool
 
 	for _, r := range payload.Rules {
 		data := mapName()
 
-		wg.Add(1)
-		go func(r *Rules) {
-			defer wg.Done()
-
+		if len(r.Controls.Combinator) > 0 {
+			return con.Control(r.Controls)
+		} else {
 			ok, err := iF.IfControl(data[r.Operator], r.Field, r.Value)
-
-			if len(r.Controls.Combinator) > 0 {
-				ok, err := con.Control(r.Controls)
-				if err != nil {
-					e <- err
-				}
-
-				b <- ok
-			}
-
 			if err != nil {
-				e <- err
+				e = err
+				break
 			}
 
 			if !ok {
-				b <- ok
+				b = ok
+				break
 			}
 
-			b <- ok
-		}(&r)
-	}
-	go func() {
-		wg.Wait()
-		close(e)
-		close(b)
-	}()
+			b = ok
+		}
 
-	return <-b, <-e
+	}
+
+	return b, e
 }
 
 // Func called for OR combinator process
@@ -73,18 +57,18 @@ func (con Controls) OrCombinator(payload Controls) (bool, error) {
 	for _, r := range payload.Rules {
 		data := mapName()
 
-		ok, err := iF.IfControl(data[r.Operator], r.Field, r.Value)
-
 		if len(r.Controls.Combinator) > 0 {
 			return con.Control(r.Controls)
-		}
+		} else {
+			ok, err := iF.IfControl(data[r.Operator], r.Field, r.Value)
 
-		if err != nil {
-			e = err
-			break
-		}
+			if err != nil {
+				e = err
+				break
+			}
 
-		b = append(b, ok)
+			b = append(b, ok)
+		}
 	}
 
 	return isContainsTrue(b), e

@@ -50,10 +50,12 @@ func TestAndCombinator(t *testing.T) {
 
 	if err != nil {
 		t.Error(err)
+		return
 	}
 
 	if !ok {
 		t.Error("combinator AND returns false, test FAILED")
+		return
 	}
 
 	t.Log("combinator AND returns true, test PASSED")
@@ -85,7 +87,7 @@ func TestOrCombinator(t *testing.T) {
 			},
 			{
 				Controls: Controls{
-					Combinator: "and",
+					Combinator: "or",
 					Rules: []Rules{
 						{
 							Id:       "2e4fb517-4db7-46fc-90a7-542c8ec08f63",
